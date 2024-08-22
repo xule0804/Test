@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pccw.test.dao.mapper.UserMapper">
+
+    <!--<update id="checkAndUpdateUserIfExists">
+        update tbl_user
+        <set>
+          user_id = user_id
+        </set>
+        where login_nm = #{loginNm}
+    </update>-->
+
+    <select id="checkAndUpdateUserIfExists">
+        select 1
+        from tbl_user
+        where login_name = #{login_name}
+    </select>
+
+    <insert id="saveUser" useGeneratedKeys="true" keyProperty="user_id" parameterType="userPo">
+        insert into tbl_user
+        (user_id, login_name, password, mobile, email, nick_name, is_deleted, rec_crt_ts)
+        values (#{userPo.user_id}, #{userPo.login_name}, #{userPo.password},
+                #{userPo.mobile}, #{userPo.email}, #{userPo.nick_name}, '0',
+                now())
+    </insert>
+
+    <select id="selectUserById" resultType="com.pccw.test.dao.pojo.UserPo">
+        select user_id    as user_id,
+               login_name as login_name,
+               password   as password,
+               mobile     as mobile,
+               email      as email,
+               nick_name  as nick_name,
+               is_deleted as is_deleted
+        from tbl_user
+        where user_id = #{userId}
+    </select>
+
+    <select id="selectUserByLoginName" resultType="com.pccw.test.dao.pojo.UserPo">
+        select user_id    as user_id,
+               login_name as login_name,
+               password   as password,
+               mobile     as mobile,
+               email      as email,
+               nick_name  as nick_name,
+               is_deleted as is_deleted
+        from tbl_user
+        where login_name = #{loginName}
+    </select>
+
+    <update id="updateUserInfoById" parameterType="userPo">
+        update tbl_user
+        <set>
+            <if test="#{userPo.password} != null">
+                password = #{userPo.password},
+            </if>
+            <if test="#{userPo.mobile} != null">
+                mobile = #{userPo.mobile},
+            </if>
+            <if test="#{userPo.email} != null">
+                email = #{userPo.email},
+            </if>
+            <if test="#{userPo.nick_name} != null">
+                nick_name = #{userPo.nick_name},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateUserStByUserId">
+        update tbl_user
+        set is_deleted=#{isDeleted}
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteAllUsers">
+        DELETE
+        FROM tbl_user
+    </delete>
+
+
+</mapper>
